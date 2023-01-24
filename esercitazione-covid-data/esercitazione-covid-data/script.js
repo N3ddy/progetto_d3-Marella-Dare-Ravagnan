@@ -154,6 +154,23 @@ svg.append('g')
 		}
 	  })
 
+/* Legenda ScatterPlot */
+	
+	svg.append("circle").attr("cx",163).attr("cy",20).attr("r", 4).style("fill", "#0000cf")
+	svg.append("circle").attr("cx",163).attr("cy",40).attr("r", 4).style("fill", "#b5006f")
+	svg.append("circle").attr("cx",163).attr("cy",60).attr("r", 4).style("fill", "#c95e00")
+	svg.append("circle").attr("cx",163).attr("cy",80).attr("r", 4).style("fill", "#6b6600")
+	svg.append("circle").attr("cx",163).attr("cy",100).attr("r", 4).style("fill", "#00a130")
+	svg.append("circle").attr("cx",163).attr("cy",120).attr("r", 4).style("fill", "black")
+
+	
+	svg.append("text").attr("x", 120).attr("y", 21).text("Asia").style("font-size", "11px").attr("alignment-baseline","middle")
+	svg.append("text").attr("x", 120).attr("y", 40).text("Europe").style("font-size", "11px").attr("alignment-baseline","middle")
+	svg.append("text").attr("x", 120).attr("y", 60).text("Africa").style("font-size", "11px").attr("alignment-baseline","middle")
+	svg.append("text").attr("x", 117).attr("y", 80).text("America").style("font-size", "11px").attr("alignment-baseline","middle")
+	svg.append("text").attr("x", 117).attr("y", 100).text("Oceania").style("font-size", "11px").attr("alignment-baseline","middle")
+	svg.append("text").attr("x", 120).attr("y", 120).text("Other").style("font-size", "11px").attr("alignment-baseline","middle")
+
 
 //aggiunta di una linea 25%
 svg.append('line')
