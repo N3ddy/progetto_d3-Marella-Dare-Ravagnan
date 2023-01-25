@@ -22,15 +22,6 @@ let otherSvgHeight = otherSvgDOM.getAttribute('height')
 // definisce un padding per il grafico
 const vizPadding = 150
 
-//titolo del grafico
-svg.append("text")
-    .attr("x", svgWidth/2)
-    .attr("y", 21)
-    .attr("text-anchor", "middle")
-    .text("Rappresentazione di casi e morti di Covid-19 per continente su un grafico a dispersione")
-    .style("font-size", "23px")
-    .attr("alignment-baseline","middle")
-
 // utilizzando la funzione d3.csvParse per analizzare i dati del dataset e mapparli ad un oggetto
 const data = d3.csvParse(dataset, d => {
 	return {
@@ -125,7 +116,7 @@ svg
 	.style('stroke', '#D3D3D3')
 */
 
-// creo il gruppo per l'asse x
+// create the x-axis group
 const xAxisGroup = svg.append('g')
   .attr('transform', `translate(0, ${svgHeight - vizPadding})`)
   .call(d3.axisBottom(xScale)
@@ -158,7 +149,7 @@ xAxisGroup
   .attr("d", "M0,-5L10,0L0,5")
   .style("fill", "black");
 
-// creo il gruppo per l'asse y
+// create the y-axis group
 const yAxisGroup = svg.append('g')
   .attr('transform', `translate(${vizPadding}, 0)`)
   .call(d3.axisLeft(yScale)
@@ -210,7 +201,7 @@ svg.append('g')
 	.attr("id", (d) => d[0])
       .attr("cx", (d) =>  xScale(d[1].cases))  
       .attr("cy", (d) => yScale(d[1].deaths))
-      .attr("r", 3)
+      .attr("r", 5)
 	  .on("click", function(d, i) {
 		createPoint(i);})
       .style('fill', d => {
@@ -220,15 +211,15 @@ svg.append('g')
 		  return '#0000cf';
 		} 
 		else if (temp == "Europe") {
-		  return '#b5006f';
+		  return '#B05CB8';
 		}
 		else if (temp == "Africa") {
 			return '#c95e00';
 		} else if (temp == "America") {
-			return '#6b6600';
+			return '#00A11B';
 		}
 		else if (temp == "Oceania") {
-			return '#00a130';
+			return '#FCD00A';
 		} else if (temp == "Other") {
 			return 'black';
 		}
@@ -244,10 +235,10 @@ svg.append('g')
 /* Legenda ScatterPlot */
 
 svg.append("circle").attr("cx",120).attr("cy",20).attr("r", 4).style("fill", "#0000cf")
-svg.append("circle").attr("cx",120).attr("cy",40).attr("r", 4).style("fill", "#b5006f")
+svg.append("circle").attr("cx",120).attr("cy",40).attr("r", 4).style("fill", "#B05CB8")
 svg.append("circle").attr("cx",120).attr("cy",60).attr("r", 4).style("fill", "#c95e00")
-svg.append("circle").attr("cx",120).attr("cy",80).attr("r", 4).style("fill", "#6b6600")
-svg.append("circle").attr("cx",120).attr("cy",100).attr("r", 4).style("fill", "#00a130")
+svg.append("circle").attr("cx",120).attr("cy",80).attr("r", 4).style("fill", "#00A11B")
+svg.append("circle").attr("cx",120).attr("cy",100).attr("r", 4).style("fill", "#FCD00A")
 svg.append("circle").attr("cx",120).attr("cy",120).attr("r", 4).style("fill", "black")
 
 
@@ -292,6 +283,7 @@ svg.append('line')
 
 function createPoint(i){
 	
+	otherSvg.selectAll("*").remove()
 	// ottengo ogni valore della nazione selezionata
 	const current_nation = d3.filter(data, function(d) { return d.country == i[0] })
 	
@@ -307,35 +299,58 @@ function createPoint(i){
 		}
 		},  d => d.month);
 
+
+	
+	month_group.sort((a, b) => d3.ascending(a[0], b[0]));
+	
+	//se la lista non ha 12 valori aggiungo i mesi mancanti
+	if(month_group.length != 12){		
+		let list_empty = [];
+		for(let i = 0;i < month_group.length; i++){
+			list_empty.push(month_group[i][0]);
+		}
+
+		for(let i = 1; i < 12; i++){
+			if((list_empty.includes(i)) == false){
+				month_group.push(
+					{0 : i,
+					 1 : {
+						"cases" : 0,
+						"deaths": 0,
+						"percCases": 0,
+						"percDeaths": 0,	
+					}});
+			}
+		}
+		month_group.sort((a, b) => d3.ascending(a[0], b[0]));
+	}
+	
+	
+	
+
 	
 	//casi massimi e morti massime	
 	const maxCases = d3.max(month_group, d => d[1].cases);
 	const maxDeaths = d3.max(month_group, d => d[1].deaths);
 
 	//creo dominio secondo grafico
-	const xOtherDomain = ["j", "f", "m", "a", "m", "j", "j", "a", "s", "o", "n", "d"]
+	const xOtherDomain = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto",
+	 "settembre", "ottobre", "novembre", "dicembre"]
 	
 
-	// definisce la scala per l'asse x del secondo SVG utilizzando d3.scaleLog
+	// definisce la scala per l'asse x utilizzando d3.scaleLog
 	const xScale = 	d3.scaleLinear()
 	.domain([0, xOtherDomain.length]) // the number of records in the dataset (the bars)
 	.range([vizPadding, otherSvgWidth-vizPadding]) // the output range (the size of the svg except the padding)
 
 
-	/*
-	// definisce la scala per l'asse y del secondo SVG utilizzando d3.scaleLog
-	const yScale = d3.scaleLinear()
-	.domain([0, total_population]) // the dataset values' range (from 0 to its max)
-	.range([otherSvgHeight - vizPadding, vizPadding]) 	
-	*/
-
-	// definisce la scala per l'asse y del secondo SVG utilizzando d3.scaleLog
+	// definisce la scala per l'asse y utilizzando d3.scaleLog
 	const yScale = d3.scaleLinear()
 	.domain([0, maxCases]) // the dataset values' range (from 0 to its max)
 	.range([otherSvgHeight - vizPadding, vizPadding])
 
-/*
-	// crea le etichette per l'asse y del secondo SVG dei casi
+	/*
+	// crea le etichette per l'asse y dei casi
 	const yAxis = d3.axisLeft(yScale)
 	.ticks(Math.E * 1.5)
 	.tickSize(- (otherSvgWidth - (vizPadding * 2)))
@@ -344,47 +359,15 @@ function createPoint(i){
 	const yTicks = otherSvg
 	.append('g')
 	.attr('transform', `translate(${vizPadding}, 0)`)
-	.call(yAxis)
-*/
-const yAxisGroup = otherSvg.append('g')
-  .attr('transform', `translate(${vizPadding}, 0)`)
-  .call(d3.axisLeft(yScale)
-  .ticks(Math.E * 1.5)
-  .tickSize(- (otherSvgWidth - (vizPadding * 2)))
-  .tickFormat(function(d){return parseInt(d);})
-  )
-
-  yAxisGroup
-  .append('line')
-  .attr('x1', 0)
-  .attr('y1', yScale.range()[0])
-  .attr('x2', 0)
-  .attr('y2', yScale.range()[1])
-  .attr('stroke', 'black')
-  .attr('stroke-width', 2)
-  .attr('marker-end','url(#arrow)')
-
-yAxisGroup
-  .append("defs")
-  .append("marker")
-  .attr("id", "arrow")
-  .attr("viewBox", "0 -5 10 10")
-  .attr("refX", 0)
-  .attr("refY", -5)
-  .attr("markerWidth", 4)
-  .attr("markerHeight", 4)
-  .attr("orient", "auto")
-  .append("path")
-  .attr("d", "M-5,0L0,-10L5,0")
-  .style("fill", "black");
+	.call(yAxis)*/
 
 
 	const yDeathScale = d3.scaleLinear()
 	.domain([0, maxDeaths]) // the dataset values' range (from 0 to its max)
 	.range([otherSvgHeight - vizPadding, vizPadding])
 
-/*
-	// crea le etichette per l'asse y del secondo SVG delle morti
+	/*
+	// crea le etichette per l'asse y delle morti
 	const yDeathAxis = d3.axisRight(yDeathScale)
 	.ticks(5)
 	.tickSize(- (otherSvgWidth - (vizPadding * 2)))
@@ -393,52 +376,75 @@ yAxisGroup
 	const yDeathTicks = otherSvg
 	.append('g')
 	.attr('transform', `translate(${otherSvgWidth - vizPadding}, 0)`)
-	.call(yDeathAxis)
-*/
-
-const ydeathAxisGroup = otherSvg.append('g')
-  .attr('transform', `translate(${vizPadding}, 0)`)
-  .call(d3.axisRight(yDeathScale)
-  .ticks(5)
-  .tickSize(- (otherSvgWidth - (vizPadding * 2)))
-  .tickFormat(function(d){return parseInt(d);})
-  )
-console.log(xScale.range())
-  ydeathAxisGroup
-  .append('line')
-  .attr('x1', (xScale.range()[1]- vizPadding))
-  .attr('y1', yScale.range()[0])
-  .attr('x2', (xScale.range()[1] - vizPadding))
-  .attr('y2', yScale.range()[1])
-  .attr('stroke', 'black')
-  .attr('stroke-width', 2)
-  .attr('marker-end','url(#arrow)')
-
-ydeathAxisGroup
-  .append("defs")
-  .append("marker")
-  .attr("id", "arrow")
-  .attr("viewBox", "0 -5 10 10")
-  .attr("refX", 0)
-  .attr("refY", -5)
-  .attr("markerWidth", 4)
-  .attr("markerHeight", 4)
-  .attr("orient", "auto")
-  .append("path")
-  .attr("d", "M-5,0L0,-10L5,0")
-  .style("fill", "black");
+	.call(yDeathAxis)*/
 
 
-	// etichetta generale asse y del secondo SVG
-	otherSvg.append("text")
-		.attr("transform", "rotate(-90)")
-		.attr("y", vizPadding / 4)
-		.attr("x",- (otherSvgHeight / 2))
-		.attr("dy", "1em")
-		.style("text-anchor", "middle")
-		.text("Population");
-/*
-	// crea le etichette per l'asse x secondo SVG
+
+
+	
+
+	//aggiungo i tick all asse x
+	const xAxisGroup = otherSvg.append('g')
+	.attr('transform', `translate(0, ${otherSvgHeight - vizPadding})`)
+	.call(d3.axisBottom(xScale)
+	.ticks(12)
+	.tickSize(-5)
+	.tickFormat(function(d){return xOtherDomain[d];})
+	)
+	
+	xAxisGroup
+	.append('line')
+	.attr('x1', xScale.range()[0])
+	.attr('y1', 0)
+	.attr('x2', xScale.range()[1])
+	.attr('y2', 0)
+	.attr('stroke', 'black')
+	.attr('stroke-width', 2)
+	.attr('marker-end','url(#arrow)')
+	
+	//aggiungo i tick all asse y dei casi
+	const yAxisGroup = otherSvg.append('g')
+		.attr('transform', `translate(${vizPadding}, 0)`)
+		.call(d3.axisLeft(yScale)
+		.ticks(10)
+		.tickSize(-5)
+		.tickFormat(function(d){return parseInt(d);})
+		)
+
+	yAxisGroup
+		.append('line')
+		.attr('x1', 0)
+		.attr('y1', yScale.range()[0])
+		.attr('x2', 0)
+		.attr('y2', yScale.range()[1])
+		.attr('stroke', 'steelblue')
+		.attr('stroke-width', 2)
+		.attr('marker-end','url(#arrow)')
+		
+	//aggiungo i tick all asse y dei morti
+	const otherYAxisGroup = otherSvg.append('g')
+		.attr('transform', `translate(${otherSvgWidth - vizPadding}, 0)`)
+		.call(d3.axisRight(yDeathScale)
+		.ticks(10)
+		.tickSize(-5)
+		.tickFormat(function(d){return parseInt(d);})
+		)
+
+	otherYAxisGroup
+		.append('line')
+		.attr('x1', 0)
+		.attr('y1', yScale.range()[0])
+		.attr('x2', 0)
+		.attr('y2', yScale.range()[1])
+		.attr('stroke', '#E61800')
+		.attr('stroke-width', 2)
+		.attr('marker-end','url(#arrow)')
+		
+		
+
+	
+		/*
+	// crea le etichette per l'asse x
 	const xAxis = d3.axisBottom(xScale)
 	.ticks(xOtherDomain.length)
 	.tickSize((otherSvgHeight - (vizPadding * 2)))
@@ -447,99 +453,77 @@ ydeathAxisGroup
 	const xTicks = otherSvg
 	.append('g')
 	.attr('transform', `translate(0, ${vizPadding})`)
-	.call(xAxis)
-*/
-	// etichetta generale asse x del secondo SVG
+	.call(xAxis)*/
+
+	// etichetta generale asse x
 	otherSvg.append("text")
 		.attr("x", otherSvgWidth / 2 )
 		.attr("y",  otherSvgHeight - vizPadding/2)
 		.style("text-anchor", "middle")
 		.text("Months");
 
-	// assegnazione del colore ai ticks del secondo SVG
+	// etichetta generale asse y sx
+	otherSvg.append("text")
+		.attr("transform", "rotate(-90)")
+		.attr("y", vizPadding / 4)
+		.attr("x",- (otherSvgHeight / 2))
+		.attr("dy", "1em")
+		.style("text-anchor", "middle")
+		.text("cases");
+
+	// etichetta generale asse y dx
+	otherSvg.append("text")
+		.attr("transform", "rotate(-90)")
+		.attr("y", (otherSvgWidth-vizPadding) + vizPadding / 4 )
+		.attr("x",- (otherSvgHeight / 2))
+		.attr("dy", "1em")
+		.style("text-anchor", "middle")
+		.text("deaths");
+
+	
+	// assegnazione del colore ai ticks
 	otherSvg
 	.selectAll('.tick line')
 	.style('stroke-width', 0)
 	//.style('stroke', '#D3D3D3')
 
 
-	otherSvg
-	.select('.tick line')
-	.style('stroke-width', 1)
-	.style('stroke', '#D3D3D3')
-
-	// assegnazione del colore al testo dei ticks del secondo SVG
+	// assegnazione del colore al testo dei ticks
 	otherSvg
 	.selectAll('.tick text')
 	.style('color', textColor)
 
-	// nascondere le linee verticali dei ticks del secondo SVG
+	// nascondere le linee verticali dei ticks
 	otherSvg
 	.selectAll('path.domain')
 	.style('stroke-width', 0)
-
-	let barPadding = 20
-	let barWidth = xScale(1) - xScale(0) // - (barPadding * 2) // the width of a bar is the difference btw 2 discrete intervals of the xscale
-
 
 	
 	otherSvg.append("path")
       .datum(month_group)
       .attr("fill", "none")
       .attr("stroke", "steelblue")
-      .attr("stroke-width", 1.5)
+      .attr("stroke-width", 2)
       .attr("d", d3.line()
         .x((d, i) =>  xScale(i))
         .y(d => yScale(d[1].cases))
         )
 
-
-
 	otherSvg.append("path")
 		.datum(month_group)
 		.attr("fill", "none")
-		.attr("stroke", "pink")
-		.attr("stroke-width", 1.5)
+		.attr("stroke", "#E61800")
+		.attr("stroke-width", 2)
 		.attr("d", d3.line()
 		  .x((d, i) =>  xScale(i))
 		  .y(d => yDeathScale(d[1].deaths))
 		  )
 
-    /*
-	otherSvg.selectAll('rect') // if there is any rect, update it with the new data
-	.data(month_group)
-	.enter() // create new elements as needed
-	.append('rect') // create the actual rects
-		.attr('x', (d, i) =>  xScale(i))
-		.attr('y', d => yScale(d[1].cases))
-		.attr('width', barWidth)
-		.attr('height', d => (otherSvgHeight - vizPadding) - yScale((d[1].cases)))
-		.attr('fill', "red")
-		.style('opacity', 0.8)
 
-
-	otherSvg.selectAll('rect') // if there is any rect, update it with the new data
-	.data(month_group)
-	.enter() // create new elements as needed
-	.append('rect') // create the actual rects
-		.attr('x', (d, i) =>  xScale(i))
-		.attr('y', d => yDeathScale(d[1].deaths))
-		.attr('width', barWidth)
-		.attr('height', d => (otherSvgHeight - vizPadding) - yDeathScale((d[1].deaths)))
-		.attr('fill', "green")
-		.style('opacity', 1)*/
-
-	/*
-	otherSvg.selectAll('rect') // if there is any rect, update it with the new data
-	.data(month_group)
-	.enter() // create new elements as needed
-	.append('rect') // create the actual rects
-		.attr('x', (d, i) => barPadding + xScale(i))
-		.attr('y', d => yScale(d[1].cases))
-		.attr('width', barWidth)
-		.attr('height', d => (otherSvgHeight - vizPadding) - yScale((d[1].percCases)))
-		.attr('fill', "red")
-		.style('opacity', 0.8)*/
+	otherSvg.append("circle").attr("cx",120).attr("cy",20).attr("r", 4).style("fill", "#0000cf")
+	otherSvg.append("circle").attr("cx",120).attr("cy",40).attr("r", 4).style("fill", "#E61800")
+	otherSvg.append("text").attr("x", 130).attr("y", 21).text("cases").style("font-size", "11px").attr("alignment-baseline","middle")
+	otherSvg.append("text").attr("x", 130).attr("y", 40).text("deaths").style("font-size", "11px").attr("alignment-baseline","middle")
 
 		
 }
