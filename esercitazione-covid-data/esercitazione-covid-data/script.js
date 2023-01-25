@@ -22,6 +22,15 @@ let otherSvgHeight = otherSvgDOM.getAttribute('height')
 // definisce un padding per il grafico
 const vizPadding = 150
 
+//titolo del grafico
+svg.append("text")
+    .attr("x", svgWidth/2)
+    .attr("y", 21)
+    .attr("text-anchor", "middle")
+    .text("Rappresentazione di casi e morti di Covid-19 per continente su un grafico a dispersione")
+    .style("font-size", "23px")
+    .attr("alignment-baseline","middle")
+
 // utilizzando la funzione d3.csvParse per analizzare i dati del dataset e mapparli ad un oggetto
 const data = d3.csvParse(dataset, d => {
 	return {
@@ -116,7 +125,7 @@ svg
 	.style('stroke', '#D3D3D3')
 */
 
-// create the x-axis group
+// creo il gruppo per l'asse x
 const xAxisGroup = svg.append('g')
   .attr('transform', `translate(0, ${svgHeight - vizPadding})`)
   .call(d3.axisBottom(xScale)
@@ -149,7 +158,7 @@ xAxisGroup
   .attr("d", "M0,-5L10,0L0,5")
   .style("fill", "black");
 
-// create the y-axis group
+// creo il gruppo per l'asse y
 const yAxisGroup = svg.append('g')
   .attr('transform', `translate(${vizPadding}, 0)`)
   .call(d3.axisLeft(yScale)
@@ -307,26 +316,26 @@ function createPoint(i){
 	const xOtherDomain = ["j", "f", "m", "a", "m", "j", "j", "a", "s", "o", "n", "d"]
 	
 
-	// definisce la scala per l'asse x utilizzando d3.scaleLog
+	// definisce la scala per l'asse x del secondo SVG utilizzando d3.scaleLog
 	const xScale = 	d3.scaleLinear()
 	.domain([0, xOtherDomain.length]) // the number of records in the dataset (the bars)
 	.range([vizPadding, otherSvgWidth-vizPadding]) // the output range (the size of the svg except the padding)
 
 
 	/*
-	// definisce la scala per l'asse y utilizzando d3.scaleLog
+	// definisce la scala per l'asse y del secondo SVG utilizzando d3.scaleLog
 	const yScale = d3.scaleLinear()
 	.domain([0, total_population]) // the dataset values' range (from 0 to its max)
 	.range([otherSvgHeight - vizPadding, vizPadding]) 	
 	*/
 
-	// definisce la scala per l'asse y utilizzando d3.scaleLog
+	// definisce la scala per l'asse y del secondo SVG utilizzando d3.scaleLog
 	const yScale = d3.scaleLinear()
 	.domain([0, maxCases]) // the dataset values' range (from 0 to its max)
 	.range([otherSvgHeight - vizPadding, vizPadding])
 
-
-	// crea le etichette per l'asse y dei casi
+/*
+	// crea le etichette per l'asse y del secondo SVG dei casi
 	const yAxis = d3.axisLeft(yScale)
 	.ticks(Math.E * 1.5)
 	.tickSize(- (otherSvgWidth - (vizPadding * 2)))
@@ -336,15 +345,46 @@ function createPoint(i){
 	.append('g')
 	.attr('transform', `translate(${vizPadding}, 0)`)
 	.call(yAxis)
+*/
+const yAxisGroup = otherSvg.append('g')
+  .attr('transform', `translate(${vizPadding}, 0)`)
+  .call(d3.axisLeft(yScale)
+  .ticks(Math.E * 1.5)
+  .tickSize(- (otherSvgWidth - (vizPadding * 2)))
+  .tickFormat(function(d){return parseInt(d);})
+  )
 
+  yAxisGroup
+  .append('line')
+  .attr('x1', 0)
+  .attr('y1', yScale.range()[0])
+  .attr('x2', 0)
+  .attr('y2', yScale.range()[1])
+  .attr('stroke', 'black')
+  .attr('stroke-width', 2)
+  .attr('marker-end','url(#arrow)')
+
+yAxisGroup
+  .append("defs")
+  .append("marker")
+  .attr("id", "arrow")
+  .attr("viewBox", "0 -5 10 10")
+  .attr("refX", 0)
+  .attr("refY", -5)
+  .attr("markerWidth", 4)
+  .attr("markerHeight", 4)
+  .attr("orient", "auto")
+  .append("path")
+  .attr("d", "M-5,0L0,-10L5,0")
+  .style("fill", "black");
 
 
 	const yDeathScale = d3.scaleLinear()
 	.domain([0, maxDeaths]) // the dataset values' range (from 0 to its max)
 	.range([otherSvgHeight - vizPadding, vizPadding])
 
-
-	// crea le etichette per l'asse y delle morti
+/*
+	// crea le etichette per l'asse y del secondo SVG delle morti
 	const yDeathAxis = d3.axisRight(yDeathScale)
 	.ticks(5)
 	.tickSize(- (otherSvgWidth - (vizPadding * 2)))
@@ -354,8 +394,42 @@ function createPoint(i){
 	.append('g')
 	.attr('transform', `translate(${otherSvgWidth - vizPadding}, 0)`)
 	.call(yDeathAxis)
+*/
 
-	// etichetta generale asse y
+const ydeathAxisGroup = otherSvg.append('g')
+  .attr('transform', `translate(${vizPadding}, 0)`)
+  .call(d3.axisRight(yDeathScale)
+  .ticks(5)
+  .tickSize(- (otherSvgWidth - (vizPadding * 2)))
+  .tickFormat(function(d){return parseInt(d);})
+  )
+console.log(xScale.range())
+  ydeathAxisGroup
+  .append('line')
+  .attr('x1', (xScale.range()[1]- vizPadding))
+  .attr('y1', yScale.range()[0])
+  .attr('x2', (xScale.range()[1] - vizPadding))
+  .attr('y2', yScale.range()[1])
+  .attr('stroke', 'black')
+  .attr('stroke-width', 2)
+  .attr('marker-end','url(#arrow)')
+
+ydeathAxisGroup
+  .append("defs")
+  .append("marker")
+  .attr("id", "arrow")
+  .attr("viewBox", "0 -5 10 10")
+  .attr("refX", 0)
+  .attr("refY", -5)
+  .attr("markerWidth", 4)
+  .attr("markerHeight", 4)
+  .attr("orient", "auto")
+  .append("path")
+  .attr("d", "M-5,0L0,-10L5,0")
+  .style("fill", "black");
+
+
+	// etichetta generale asse y del secondo SVG
 	otherSvg.append("text")
 		.attr("transform", "rotate(-90)")
 		.attr("y", vizPadding / 4)
@@ -363,8 +437,8 @@ function createPoint(i){
 		.attr("dy", "1em")
 		.style("text-anchor", "middle")
 		.text("Population");
-
-	// crea le etichette per l'asse x
+/*
+	// crea le etichette per l'asse x secondo SVG
 	const xAxis = d3.axisBottom(xScale)
 	.ticks(xOtherDomain.length)
 	.tickSize((otherSvgHeight - (vizPadding * 2)))
@@ -374,15 +448,15 @@ function createPoint(i){
 	.append('g')
 	.attr('transform', `translate(0, ${vizPadding})`)
 	.call(xAxis)
-
-	// etichetta generale asse x
+*/
+	// etichetta generale asse x del secondo SVG
 	otherSvg.append("text")
 		.attr("x", otherSvgWidth / 2 )
 		.attr("y",  otherSvgHeight - vizPadding/2)
 		.style("text-anchor", "middle")
 		.text("Months");
 
-	// assegnazione del colore ai ticks
+	// assegnazione del colore ai ticks del secondo SVG
 	otherSvg
 	.selectAll('.tick line')
 	.style('stroke-width', 0)
@@ -394,12 +468,12 @@ function createPoint(i){
 	.style('stroke-width', 1)
 	.style('stroke', '#D3D3D3')
 
-	// assegnazione del colore al testo dei ticks
+	// assegnazione del colore al testo dei ticks del secondo SVG
 	otherSvg
 	.selectAll('.tick text')
 	.style('color', textColor)
 
-	// nascondere le linee verticali dei ticks
+	// nascondere le linee verticali dei ticks del secondo SVG
 	otherSvg
 	.selectAll('path.domain')
 	.style('stroke-width', 0)
