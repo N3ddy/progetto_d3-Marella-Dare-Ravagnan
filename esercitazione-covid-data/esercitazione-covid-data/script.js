@@ -63,17 +63,6 @@ const xScale = 	d3.scaleLog()
 const yScale = d3.scaleLog()
 	.domain(yDomain) // the dataset values' range (from 0 to its max)
 	.range([svgHeight - vizPadding, vizPadding]) 	
-/*
-// crea le etichette per l'asse y
-const yAxis = d3.axisLeft(yScale)
-	.ticks(Math.E * 1.5)
-	.tickSize(- (svgWidth - (vizPadding * 2)))
-	.tickFormat(function(d){return parseInt(d);});
-const yTicks = svg
-	.append('g')
-	.attr('transform', `translate(${vizPadding}, 0)`)
-	.call(yAxis)
-*/
 
 // etichetta generale asse y
 svg.append("text")
@@ -82,25 +71,23 @@ svg.append("text")
         .attr("x",- (svgHeight / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text("Deaths");
-/*
-// crea le etichette per l'asse x
-const xAxis = d3.axisBottom(xScale)
-	.ticks(Math.E * 2)
-	.tickSize((svgHeight - (vizPadding * 2)))
-	.tickFormat(function(d){return parseInt(d);});
-const xTicks = svg
-	.append('g')
-	.attr('transform', `translate(0, ${vizPadding})`)
-	.call(xAxis)
-*/
+        .text("Morti");
 
 // etichetta generale asse x
 svg.append("text")
 		.attr("x", svgWidth / 2 )
         .attr("y",  svgHeight - vizPadding/2)
         .style("text-anchor", "middle")
-        .text("Cases");
+        .text("Casi di positivita");
+
+
+// titolo del grafico
+svg.append("text")
+		.attr("x", svgWidth / 2 )
+        .attr("y", vizPadding/2)
+        .style("text-anchor", "middle")
+        .text("rapporto casi/morti per nazione");
+
 
 // assegnazione del colore ai ticks
 svg
@@ -108,13 +95,6 @@ svg
 	.style('stroke-width', 0)
 	//.style('stroke', '#D3D3D3')
 
-/*
-//creazione della linea asse x
-svg
-	.select('.tick line')
-	.style('stroke-width', 3)
-	.style('stroke', '#D3D3D3')
-*/
 
 // create the x-axis group
 const xAxisGroup = svg.append('g')
@@ -247,7 +227,7 @@ svg.append("text").attr("x", 130).attr("y", 40).text("Europe").style("font-size"
 svg.append("text").attr("x", 130).attr("y", 60).text("Africa").style("font-size", "11px").attr("alignment-baseline","middle")
 svg.append("text").attr("x", 130).attr("y", 80).text("America").style("font-size", "11px").attr("alignment-baseline","middle")
 svg.append("text").attr("x", 130).attr("y", 100).text("Oceania").style("font-size", "11px").attr("alignment-baseline","middle")
-svg.append("text").attr("x", 130).attr("y", 120).text("Other").style("font-size", "11px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 130).attr("y", 120).text("Altri").style("font-size", "11px").attr("alignment-baseline","middle")
 
 /*
 //aggiunta di una linea 25%
@@ -349,39 +329,11 @@ function createPoint(i){
 	.domain([0, maxCases]) // the dataset values' range (from 0 to its max)
 	.range([otherSvgHeight - vizPadding, vizPadding])
 
-	/*
-	// crea le etichette per l'asse y dei casi
-	const yAxis = d3.axisLeft(yScale)
-	.ticks(Math.E * 1.5)
-	.tickSize(- (otherSvgWidth - (vizPadding * 2)))
-	.tickFormat(function(d){return parseInt(d);});
-	
-	const yTicks = otherSvg
-	.append('g')
-	.attr('transform', `translate(${vizPadding}, 0)`)
-	.call(yAxis)*/
-
 
 	const yDeathScale = d3.scaleLinear()
 	.domain([0, maxDeaths]) // the dataset values' range (from 0 to its max)
 	.range([otherSvgHeight - vizPadding, vizPadding])
 
-	/*
-	// crea le etichette per l'asse y delle morti
-	const yDeathAxis = d3.axisRight(yDeathScale)
-	.ticks(5)
-	.tickSize(- (otherSvgWidth - (vizPadding * 2)))
-	.tickFormat(function(d){return parseInt(d);});
-	
-	const yDeathTicks = otherSvg
-	.append('g')
-	.attr('transform', `translate(${otherSvgWidth - vizPadding}, 0)`)
-	.call(yDeathAxis)*/
-
-
-
-
-	
 
 	//aggiungo i tick all asse x
 	const xAxisGroup = otherSvg.append('g')
@@ -440,27 +392,21 @@ function createPoint(i){
 		.attr('stroke-width', 2)
 		.attr('marker-end','url(#arrow)')
 		
-		
 
-	
-		/*
-	// crea le etichette per l'asse x
-	const xAxis = d3.axisBottom(xScale)
-	.ticks(xOtherDomain.length)
-	.tickSize((otherSvgHeight - (vizPadding * 2)))
-	.tickFormat(function(d, i){return xOtherDomain[i];});
+	// titolo del plot
+	otherSvg.append("text")
+		.attr("x", otherSvgWidth / 2 )
+		.attr("y", vizPadding/2)
+		.style("text-anchor", "middle")
+		.text("plot dei dati della nazione " + `${i[0]}`);
 
-	const xTicks = otherSvg
-	.append('g')
-	.attr('transform', `translate(0, ${vizPadding})`)
-	.call(xAxis)*/
 
 	// etichetta generale asse x
 	otherSvg.append("text")
 		.attr("x", otherSvgWidth / 2 )
 		.attr("y",  otherSvgHeight - vizPadding/2)
 		.style("text-anchor", "middle")
-		.text("Months");
+		.text("Mesi");
 
 	// etichetta generale asse y sx
 	otherSvg.append("text")
@@ -469,7 +415,7 @@ function createPoint(i){
 		.attr("x",- (otherSvgHeight / 2))
 		.attr("dy", "1em")
 		.style("text-anchor", "middle")
-		.text("cases");
+		.text("Casi di positivita");
 
 	// etichetta generale asse y dx
 	otherSvg.append("text")
@@ -478,7 +424,7 @@ function createPoint(i){
 		.attr("x",- (otherSvgHeight / 2))
 		.attr("dy", "1em")
 		.style("text-anchor", "middle")
-		.text("deaths");
+		.text("Morti");
 
 	
 	// assegnazione del colore ai ticks
@@ -491,7 +437,7 @@ function createPoint(i){
 	// assegnazione del colore al testo dei ticks
 	otherSvg
 	.selectAll('.tick text')
-	.style('color', textColor)
+	.style('color', "black")
 
 	// nascondere le linee verticali dei ticks
 	otherSvg
@@ -519,11 +465,11 @@ function createPoint(i){
 		  .y(d => yDeathScale(d[1].deaths))
 		  )
 
-
+	//legenda secondo plot
 	otherSvg.append("circle").attr("cx",120).attr("cy",20).attr("r", 4).style("fill", "#0000cf")
 	otherSvg.append("circle").attr("cx",120).attr("cy",40).attr("r", 4).style("fill", "#E61800")
-	otherSvg.append("text").attr("x", 130).attr("y", 21).text("cases").style("font-size", "11px").attr("alignment-baseline","middle")
-	otherSvg.append("text").attr("x", 130).attr("y", 40).text("deaths").style("font-size", "11px").attr("alignment-baseline","middle")
+	otherSvg.append("text").attr("x", 130).attr("y", 21).text("Casi di positivita").style("font-size", "11px").attr("alignment-baseline","middle")
+	otherSvg.append("text").attr("x", 130).attr("y", 40).text("Morti").style("font-size", "11px").attr("alignment-baseline","middle")
 
 		
 }

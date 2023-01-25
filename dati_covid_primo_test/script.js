@@ -86,12 +86,12 @@ const yTicks = svg
 //asse x
 const xAxis = d3.axisBottom(xScale)
 	.ticks(3)
-	.tickSize((svgHeight - (vizPadding)))
+	.tickSize((svgHeight - (vizPadding*2)))
 	.tickFormat(formatCompany);
 
 const xTicks = svg
 	.append('g')
-	.attr('transform', `translate(${vizPadding}, 0)`)
+	.attr('transform', `translate(${vizPadding}, ${vizPadding})`)
 	.call(xAxis)
 
 // creo il gruppo per l'asse x
@@ -133,6 +133,28 @@ const yAxisGroup = svg.append('g')
   .ticks(10)
   .tickSize(- (svgWidth - (vizPadding * 2)))
   )
+
+const yAxisGroup2 = svg.append('g')
+  .attr('transform', `translate(${vizPadding}, 0)`)
+  .call(d3.axisLeft(yScale)
+  .ticks(3)
+  .tickSize(- (svgWidth - (vizPadding * 2)))
+  .tickValues([8900000000 , 3600000000, 2400000000])
+  
+  )
+
+  yAxisGroup2
+  .selectAll('.tick line')
+  .each(function (d) {
+      // d is the tick's value (in this case, a number)
+      d3.select(this)
+        .style("stroke", "black")
+        .style("stroke-dasharray",  "5 5")
+
+  })
+  
+
+
 
   yAxisGroup
   .append('line')
