@@ -299,8 +299,9 @@ function createPoint(i){
 		},  d => d.month);
 
 	
-		console.log(total_population)
-	console.log(month_group)
+	//casi massimi e morti massime	
+	const maxCases = d3.max(month_group, d => d[1].cases);
+	const maxDeaths = d3.max(month_group, d => d[1].deaths);
 
 	//creo dominio secondo grafico
 	const xOtherDomain = ["j", "f", "m", "a", "m", "j", "j", "a", "s", "o", "n", "d"]
@@ -321,11 +322,11 @@ function createPoint(i){
 
 	// definisce la scala per l'asse y utilizzando d3.scaleLog
 	const yScale = d3.scaleLinear()
-	.domain([0, 100]) // the dataset values' range (from 0 to its max)
+	.domain([0, maxCases]) // the dataset values' range (from 0 to its max)
 	.range([otherSvgHeight - vizPadding, vizPadding])
 
 
-	// crea le etichette per l'asse y
+	// crea le etichette per l'asse y dei casi
 	const yAxis = d3.axisLeft(yScale)
 	.ticks(Math.E * 1.5)
 	.tickSize(- (otherSvgWidth - (vizPadding * 2)))
@@ -335,6 +336,24 @@ function createPoint(i){
 	.append('g')
 	.attr('transform', `translate(${vizPadding}, 0)`)
 	.call(yAxis)
+
+
+
+	const yDeathScale = d3.scaleLinear()
+	.domain([0, maxDeaths]) // the dataset values' range (from 0 to its max)
+	.range([otherSvgHeight - vizPadding, vizPadding])
+
+
+	// crea le etichette per l'asse y delle morti
+	const yDeathAxis = d3.axisRight(yDeathScale)
+	.ticks(5)
+	.tickSize(- (otherSvgWidth - (vizPadding * 2)))
+	.tickFormat(function(d){return parseInt(d);});
+	
+	const yDeathTicks = otherSvg
+	.append('g')
+	.attr('transform', `translate(${otherSvgWidth - vizPadding}, 0)`)
+	.call(yDeathAxis)
 
 	// etichetta generale asse y
 	otherSvg.append("text")
@@ -388,16 +407,53 @@ function createPoint(i){
 	let barPadding = 20
 	let barWidth = xScale(1) - xScale(0) // - (barPadding * 2) // the width of a bar is the difference btw 2 discrete intervals of the xscale
 
+
+	
+	otherSvg.append("path")
+      .datum(month_group)
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 1.5)
+      .attr("d", d3.line()
+        .x((d, i) =>  xScale(i))
+        .y(d => yScale(d[1].cases))
+        )
+
+
+
+	otherSvg.append("path")
+		.datum(month_group)
+		.attr("fill", "none")
+		.attr("stroke", "pink")
+		.attr("stroke-width", 1.5)
+		.attr("d", d3.line()
+		  .x((d, i) =>  xScale(i))
+		  .y(d => yDeathScale(d[1].deaths))
+		  )
+
+    /*
 	otherSvg.selectAll('rect') // if there is any rect, update it with the new data
 	.data(month_group)
 	.enter() // create new elements as needed
 	.append('rect') // create the actual rects
 		.attr('x', (d, i) =>  xScale(i))
-		.attr('y', d => yScale(d[1].percCases))
+		.attr('y', d => yScale(d[1].cases))
 		.attr('width', barWidth)
-		.attr('height', d => (otherSvgHeight - vizPadding) - yScale((d[1].percCases)))
+		.attr('height', d => (otherSvgHeight - vizPadding) - yScale((d[1].cases)))
 		.attr('fill', "red")
 		.style('opacity', 0.8)
+
+
+	otherSvg.selectAll('rect') // if there is any rect, update it with the new data
+	.data(month_group)
+	.enter() // create new elements as needed
+	.append('rect') // create the actual rects
+		.attr('x', (d, i) =>  xScale(i))
+		.attr('y', d => yDeathScale(d[1].deaths))
+		.attr('width', barWidth)
+		.attr('height', d => (otherSvgHeight - vizPadding) - yDeathScale((d[1].deaths)))
+		.attr('fill', "green")
+		.style('opacity', 1)*/
 
 	/*
 	otherSvg.selectAll('rect') // if there is any rect, update it with the new data
