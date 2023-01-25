@@ -54,9 +54,9 @@ const data = d3.csvParse(dataset, d => {
 	}
 })
 
-var company_size = ["Small  Company","Medium  Company","Large  Company", ""];
+var company_size = ["Piccola", "Media","Grande"];
 var formatCompany = function(d) {
-    return company_size[d % 4];      
+    return company_size[d];      
 }
 
 
@@ -72,7 +72,7 @@ const yScale = d3.scaleLinear()
 
 let radius = (xScale(1) - xScale(0))/4
 
-
+/*
 const yAxis = d3.axisLeft(yScale)
 	.ticks(10)
 	.tickSize(- (svgWidth - (vizPadding * 2)))
@@ -81,6 +81,7 @@ const yTicks = svg
 	.append('g')
 	.attr('transform', `translate(${vizPadding}, 0)`)
 	.call(yAxis)
+*/
 
 //asse x
 const xAxis = d3.axisBottom(xScale)
@@ -93,7 +94,69 @@ const xTicks = svg
 	.attr('transform', `translate(${vizPadding}, 0)`)
 	.call(xAxis)
 
+// creo il gruppo per l'asse x
+const xAxisGroup = svg.append('g')
+  .attr('transform', `translate(0, ${svgHeight - vizPadding})`)
+  .attr("fill", "none")
+  .call(d3.axisBottom(xScale)
+  .ticks(0)
+  )
 
+  xAxisGroup
+  .append('line')
+  .attr('x1', xScale.range()[0])
+  .attr('y1', 0)
+  .attr('x2', xScale.range()[1])
+  .attr('y2', 0)
+  .attr('stroke', 'black')
+  .attr('stroke-width', 2)
+  .attr('marker-end','url(#arrow)')
+
+xAxisGroup
+  .append("defs")
+  .append("marker")
+  .attr("id", "arrow")
+  .attr("viewBox", "0 -5 10 10")
+  .attr("refX", 5)
+  .attr("refY", 0)
+  .attr("markerWidth", 4)
+  .attr("markerHeight", 4)
+  .attr("orient", "auto")
+  .append("path")
+  .attr("d", "M0,-5L10,0L0,5")
+  .style("fill", "black");
+
+// creo il gruppo per l'asse y
+const yAxisGroup = svg.append('g')
+  .attr('transform', `translate(${vizPadding}, 0)`)
+  .call(d3.axisLeft(yScale)
+  .ticks(10)
+  .tickSize(- (svgWidth - (vizPadding * 2)))
+  )
+
+  yAxisGroup
+  .append('line')
+  .attr('x1', 0)
+  .attr('y1', yScale.range()[0])
+  .attr('x2', 0)
+  .attr('y2', yScale.range()[1])
+  .attr('stroke', 'black')
+  .attr('stroke-width', 2)
+  .attr('marker-end','url(#arrow)')
+
+yAxisGroup
+  .append("defs")
+  .append("marker")
+  .attr("id", "arrow")
+  .attr("viewBox", "0 -5 10 10")
+  .attr("refX", 0)
+  .attr("refY", -5)
+  .attr("markerWidth", 4)
+  .attr("markerHeight", 4)
+  .attr("orient", "auto")
+  .append("path")
+  .attr("d", "M-5,0L0,-10L5,0")
+  .style("fill", "black");
 
 
 // colouring the ticks
@@ -125,7 +188,7 @@ const circles = svg
 //archi
 const arcs = svg
   .selectAll("path")
-  .data(data, (d,i) => {return d + i}) //bug risolto da Carlo
+  .data(data, (d,i) => {return d + i})
   .enter()
   .append("path")
   .attr("d", (d, i) => describeArc((xScale(i) + vizPadding), (yScale(d.evasion)), radius, 0, (d.percControlled*360)))
@@ -142,26 +205,20 @@ const texts = svg.selectAll(".myTexts")
     .text(d => d.percControlled);
 
 
-	//legenda	
-	svg.append("circle").attr("cx",570).attr("cy",20).attr("r", 6).style("fill", controlledcolor)
-	svg.append("circle").attr("cx",570).attr("cy",60).attr("r", 6).style("fill", notcontrollercolor)
+	//legenda e titolo
+	//titolo del grafico
+	svg.append("text")
+	.attr("x", svgWidth/2)
+	.attr("y", 6)
+	.attr("text-anchor", "middle")
+	.text("Grafici a torta che mostra l'evasione (asse y), il tipo di azienda (asse x) e la percentuale di aziende controllate.")
+	.style("font-size", "12px")
+	.attr("alignment-baseline","middle")
 
-	svg.append("text").attr("x", 400).attr("y", 20).text("controlled company").style("font-size", "15px").attr("alignment-baseline","middle")
-	svg.append("text").attr("x", 400).attr("y", 60).text("not controlled company").style("font-size", "15px").attr("alignment-baseline","middle")
+	svg.append("circle").attr("cx",400).attr("cy",20).attr("r", 6).style("fill", controlledcolor)
+	svg.append("circle").attr("cx",400).attr("cy",60).attr("r", 6).style("fill", notcontrollercolor)
+
+	svg.append("text").attr("x", 410).attr("y", 25).text("controllata").style("font-size", "15px").attr("alignment-baseline","left")
+	svg.append("text").attr("x", 410).attr("y", 65).text("non controllata").style("font-size", "15px").attr("alignment-baseline","left")
 	
-	/*
-	const labels = svg // adding the dataviz to the correct element in the DOM
-	.selectAll('text.labels') // if there is any rect, update it with the new data
-	.data(data)
-	.enter() // create new elements as needed
-	.append('text') // create the actual rects
-	.attr('x', (d, i) => xScale(i) + barWidth / 2)
-		.attr('y', d => svgHeight - vizPadding + 16) // positioning the text at the middle of the bar
-		.text(d => d.companyType)
-		.attr('text-anchor', 'middle') // centring the text
-		.attr('class', 'labels')
-		.attr('fill', textColor)*/
-
-
-
 /*END*/
