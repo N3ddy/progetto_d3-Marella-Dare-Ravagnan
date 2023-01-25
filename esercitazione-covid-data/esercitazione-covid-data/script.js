@@ -20,8 +20,7 @@ let otherSvgWidth = otherSvgDOM.getAttribute('width')
 let otherSvgHeight = otherSvgDOM.getAttribute('height')
 
 // definisce un padding per il grafico
-const vizPadding = 70
-
+const vizPadding = 150
 
 // utilizzando la funzione d3.csvParse per analizzare i dati del dataset e mapparli ad un oggetto
 const data = d3.csvParse(dataset, d => {
@@ -64,7 +63,7 @@ const xScale = 	d3.scaleLog()
 const yScale = d3.scaleLog()
 	.domain(yDomain) // the dataset values' range (from 0 to its max)
 	.range([svgHeight - vizPadding, vizPadding]) 	
-
+/*
 // crea le etichette per l'asse y
 const yAxis = d3.axisLeft(yScale)
 	.ticks(Math.E * 1.5)
@@ -74,6 +73,7 @@ const yTicks = svg
 	.append('g')
 	.attr('transform', `translate(${vizPadding}, 0)`)
 	.call(yAxis)
+*/
 
 // etichetta generale asse y
 svg.append("text")
@@ -83,17 +83,17 @@ svg.append("text")
         .attr("dy", "1em")
         .style("text-anchor", "middle")
         .text("Deaths");
-
+/*
 // crea le etichette per l'asse x
 const xAxis = d3.axisBottom(xScale)
 	.ticks(Math.E * 2)
 	.tickSize((svgHeight - (vizPadding * 2)))
 	.tickFormat(function(d){return parseInt(d);});
-
 const xTicks = svg
 	.append('g')
 	.attr('transform', `translate(0, ${vizPadding})`)
 	.call(xAxis)
+*/
 
 // etichetta generale asse x
 svg.append("text")
@@ -108,11 +108,79 @@ svg
 	.style('stroke-width', 0)
 	//.style('stroke', '#D3D3D3')
 
-// linea asse X
+/*
+//creazione della linea asse x
 svg
 	.select('.tick line')
-	.style('stroke-width', 1)
+	.style('stroke-width', 3)
 	.style('stroke', '#D3D3D3')
+*/
+
+// create the x-axis group
+const xAxisGroup = svg.append('g')
+  .attr('transform', `translate(0, ${svgHeight - vizPadding})`)
+  .call(d3.axisBottom(xScale)
+  .ticks(Math.E * 1.5)
+  .tickSize(-5)
+  .tickFormat(function(d){return parseInt(d);})
+  )
+
+  xAxisGroup
+  .append('line')
+  .attr('x1', xScale.range()[0])
+  .attr('y1', 0)
+  .attr('x2', xScale.range()[1])
+  .attr('y2', 0)
+  .attr('stroke', 'black')
+  .attr('stroke-width', 2)
+  .attr('marker-end','url(#arrow)')
+
+xAxisGroup
+  .append("defs")
+  .append("marker")
+  .attr("id", "arrow")
+  .attr("viewBox", "0 -5 10 10")
+  .attr("refX", 5)
+  .attr("refY", 0)
+  .attr("markerWidth", 4)
+  .attr("markerHeight", 4)
+  .attr("orient", "auto")
+  .append("path")
+  .attr("d", "M0,-5L10,0L0,5")
+  .style("fill", "black");
+
+// create the y-axis group
+const yAxisGroup = svg.append('g')
+  .attr('transform', `translate(${vizPadding}, 0)`)
+  .call(d3.axisLeft(yScale)
+  .ticks(Math.E * 1.5)
+  .tickSize(-5)
+  .tickFormat(function(d){return parseInt(d);})
+  )
+
+  yAxisGroup
+  .append('line')
+  .attr('x1', 0)
+  .attr('y1', yScale.range()[0])
+  .attr('x2', 0)
+  .attr('y2', yScale.range()[1])
+  .attr('stroke', 'black')
+  .attr('stroke-width', 2)
+  .attr('marker-end','url(#arrow)')
+
+yAxisGroup
+  .append("defs")
+  .append("marker")
+  .attr("id", "arrow")
+  .attr("viewBox", "0 -5 10 10")
+  .attr("refX", 0)
+  .attr("refY", -5)
+  .attr("markerWidth", 4)
+  .attr("markerHeight", 4)
+  .attr("orient", "auto")
+  .append("path")
+  .attr("d", "M-5,0L0,-10L5,0")
+  .style("fill", "black");
 
 // assegnazione del colore al testo dei ticks
 svg
@@ -166,24 +234,22 @@ svg.append('g')
 
 /* Legenda ScatterPlot */
 
-svg.append("circle").attr("cx",163).attr("cy",20).attr("r", 4).style("fill", "#0000cf")
-svg.append("circle").attr("cx",163).attr("cy",40).attr("r", 4).style("fill", "#b5006f")
-svg.append("circle").attr("cx",163).attr("cy",60).attr("r", 4).style("fill", "#c95e00")
-svg.append("circle").attr("cx",163).attr("cy",80).attr("r", 4).style("fill", "#6b6600")
-svg.append("circle").attr("cx",163).attr("cy",100).attr("r", 4).style("fill", "#00a130")
-svg.append("circle").attr("cx",163).attr("cy",120).attr("r", 4).style("fill", "black")
+svg.append("circle").attr("cx",120).attr("cy",20).attr("r", 4).style("fill", "#0000cf")
+svg.append("circle").attr("cx",120).attr("cy",40).attr("r", 4).style("fill", "#b5006f")
+svg.append("circle").attr("cx",120).attr("cy",60).attr("r", 4).style("fill", "#c95e00")
+svg.append("circle").attr("cx",120).attr("cy",80).attr("r", 4).style("fill", "#6b6600")
+svg.append("circle").attr("cx",120).attr("cy",100).attr("r", 4).style("fill", "#00a130")
+svg.append("circle").attr("cx",120).attr("cy",120).attr("r", 4).style("fill", "black")
 
 
-svg.append("text").attr("x", 120).attr("y", 21).text("Asia").style("font-size", "11px").attr("alignment-baseline","middle")
-svg.append("text").attr("x", 120).attr("y", 40).text("Europe").style("font-size", "11px").attr("alignment-baseline","middle")
-svg.append("text").attr("x", 120).attr("y", 60).text("Africa").style("font-size", "11px").attr("alignment-baseline","middle")
-svg.append("text").attr("x", 117).attr("y", 80).text("America").style("font-size", "11px").attr("alignment-baseline","middle")
-svg.append("text").attr("x", 117).attr("y", 100).text("Oceania").style("font-size", "11px").attr("alignment-baseline","middle")
-svg.append("text").attr("x", 120).attr("y", 120).text("Other").style("font-size", "11px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 130).attr("y", 21).text("Asia").style("font-size", "11px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 130).attr("y", 40).text("Europe").style("font-size", "11px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 130).attr("y", 60).text("Africa").style("font-size", "11px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 130).attr("y", 80).text("America").style("font-size", "11px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 130).attr("y", 100).text("Oceania").style("font-size", "11px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 130).attr("y", 120).text("Other").style("font-size", "11px").attr("alignment-baseline","middle")
 
-
-
-
+/*
 //aggiunta di una linea 25%
 svg.append('line')
     .style("stroke", "black")
@@ -213,13 +279,9 @@ svg.append('line')
     .attr("y1", yScale(1))
     .attr("x2", xScale(maxCases+maxCases/2 + maxCases/4))
     .attr("y2", yScale(maxDeaths)); 
-
-
-
+*/
 
 function createPoint(i){
-	
-	
 	
 	// ottengo ogni valore della nazione selezionata
 	const current_nation = d3.filter(data, function(d) { return d.country == i[0] })
@@ -325,9 +387,6 @@ function createPoint(i){
 
 	let barPadding = 20
 	let barWidth = xScale(1) - xScale(0) // - (barPadding * 2) // the width of a bar is the difference btw 2 discrete intervals of the xscale
-
-
-	
 
 	otherSvg.selectAll('rect') // if there is any rect, update it with the new data
 	.data(month_group)
