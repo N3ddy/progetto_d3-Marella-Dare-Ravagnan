@@ -15,7 +15,7 @@ const svgDOM = document.querySelector('#chart')
 let svgWidth = svgDOM.getAttribute('width') 
 let svgHeight = svgDOM.getAttribute('height')
 
-const vizPadding = 70
+const vizPadding = 115
 
 
 const polarToCartesian = (centerX, centerY, radius, angleInDegrees) => {
@@ -70,7 +70,7 @@ const yScale = d3.scaleLinear()
 	.range([svgHeight - vizPadding, vizPadding]) 
 
 
-let radius = (xScale(1) - xScale(0))/4
+let radius = (xScale(1) - xScale(0))/6
 
 /*
 const yAxis = d3.axisLeft(yScale)
@@ -136,6 +136,7 @@ const yAxisGroup = svg.append('g')
 
 const yAxisGroup2 = svg.append('g')
   .attr('transform', `translate(${vizPadding}, 0)`)
+  .attr("class", "valueLine")
   .call(d3.axisLeft(yScale)
   .ticks(3)
   .tickSize(- (svgWidth - (vizPadding * 2)))
@@ -182,9 +183,15 @@ yAxisGroup
 
 
 // colouring the ticks
-svg
+  svg
 	.selectAll('.tick line')
 	.style('stroke', '#D3D3D3')
+
+
+  svg
+	.selectAll('.valueLine .tick line')
+	.style('stroke', 'black')
+
 
 // colouring the ticks' text
 svg
@@ -222,7 +229,7 @@ const texts = svg.selectAll(".myTexts")
     .enter()
     .append("text")
 	.attr("x", (d, i) => xScale(i) + vizPadding - 15)
-    .attr("y", d => yScale(d.evasion) - radius - 10)
+    .attr("y", d => yScale(d.evasion) - radius - 5)
     .attr("dy", "-.35em")
     .text(d => d.percControlled);
 
@@ -231,16 +238,37 @@ const texts = svg.selectAll(".myTexts")
 	//titolo del grafico
 	svg.append("text")
 	.attr("x", svgWidth/2)
-	.attr("y", 6)
+	.attr("y", 20)
 	.attr("text-anchor", "middle")
 	.text("Grafici a torta che mostra l'evasione (asse y), il tipo di azienda (asse x) e la percentuale di aziende controllate.")
-	.style("font-size", "12px")
+	.style("font-size", "20px")
 	.attr("alignment-baseline","middle")
 
-	svg.append("circle").attr("cx",400).attr("cy",20).attr("r", 6).style("fill", controlledcolor)
-	svg.append("circle").attr("cx",400).attr("cy",60).attr("r", 6).style("fill", notcontrollercolor)
 
-	svg.append("text").attr("x", 410).attr("y", 25).text("controllata").style("font-size", "15px").attr("alignment-baseline","left")
-	svg.append("text").attr("x", 410).attr("y", 65).text("non controllata").style("font-size", "15px").attr("alignment-baseline","left")
+  // etichetta generale asse x
+  svg.append("text")
+	.attr("x", svgWidth/2)
+	.attr("y", 860)
+	.attr("text-anchor", "middle")
+	.text("tipo di azienda")
+	.style("font-size", "15px")
+	.attr("alignment-baseline","middle")
+
+
+  // etichetta generale asse y
+  svg.append("text")
+  .attr("transform", "rotate(-90)")
+  .attr("y", 20)
+  .attr("x",- (svgHeight / 2))
+  .attr("dy", "1em")
+  .style("text-anchor", "middle")
+  .style("font-size", "15px")
+  .text("capitale evaso [€]");
+
+	svg.append("circle").attr("cx",1000).attr("cy",50).attr("r", 6).style("fill", controlledcolor)
+	svg.append("circle").attr("cx",1000).attr("cy",90).attr("r", 6).style("fill", notcontrollercolor)
+
+	svg.append("text").attr("x", 1010).attr("y", 55).text("controllata").style("font-size", "15px").attr("alignment-baseline","left")
+	svg.append("text").attr("x", 1010).attr("y", 95).text("non controllata").style("font-size", "15px").attr("alignment-baseline","left")
 	
 /*END*/

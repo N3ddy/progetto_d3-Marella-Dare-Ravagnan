@@ -5,28 +5,39 @@
 }
 
 html {
-	font-size: 16px;
+	font-size: 24px;
 	font-family: 'IBM Plex Sans', sans-serif;
 }
-
+/*
 header {
 	width: 100vw;
 	height: 64px;
 	background-color: #3CB371;
-	position: fixed; /* when scrolling, it remains fixed */
+	position: fixed; /* when scrolling, it remains fixed 
 	top: 0;
 	left: 0;
 	color: #c6ecd6;
 	text-align: center;
-	/* flex is a simple way to center the items inside an element */
+	/* flex is a simple way to center the items inside an element 
 	display: flex;
-	justify-content: center; /* horizontal centring */
-	align-items: center; /* vertical centring */
-}
+	justify-content: center; /* horizontal centring 
+	align-items: center; /* vertical centring 
+}*/
 
 main {
 	width: 100vw;
-	height: 100vh; /* 100% of the window height minus the height of the header  */
+	height: 100vw;            
+	background-color: #c6ecd6;
+	top: 64px;
+	left: 0;
+	display: flex;
+	justify-content: center; 
+	align-items: center;
+}
+/*
+main {
+	width: 100vw;
+	height: 100vh; /* 100% of the window height minus the height of the header  
 	background-color: #c6ecd6;
 	position: fixed;
 	top: 0;
@@ -34,7 +45,7 @@ main {
 	display: flex;
 	justify-content: center; 
 	align-items: center;
-}
+}*/
 
 svg {
 	background-color: #FFF;

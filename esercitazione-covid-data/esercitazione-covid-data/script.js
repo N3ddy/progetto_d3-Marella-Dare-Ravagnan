@@ -199,7 +199,7 @@ svg.append('g')
 			return '#00A11B';
 		}
 		else if (temp == "Oceania") {
-			return '#FCD00A';
+			return '#E8BF09';
 		} else if (temp == "Other") {
 			return 'black';
 		}
@@ -218,7 +218,7 @@ svg.append("circle").attr("cx",120).attr("cy",20).attr("r", 4).style("fill", "#0
 svg.append("circle").attr("cx",120).attr("cy",40).attr("r", 4).style("fill", "#B05CB8")
 svg.append("circle").attr("cx",120).attr("cy",60).attr("r", 4).style("fill", "#c95e00")
 svg.append("circle").attr("cx",120).attr("cy",80).attr("r", 4).style("fill", "#00A11B")
-svg.append("circle").attr("cx",120).attr("cy",100).attr("r", 4).style("fill", "#FCD00A")
+svg.append("circle").attr("cx",120).attr("cy",100).attr("r", 4).style("fill", "#E8BF09")
 svg.append("circle").attr("cx",120).attr("cy",120).attr("r", 4).style("fill", "black")
 
 
@@ -352,7 +352,7 @@ function createPoint(i){
 	.attr('y2', 0)
 	.attr('stroke', 'black')
 	.attr('stroke-width', 2)
-	.attr('marker-end','url(#arrow)')
+	
 	
 	//aggiungo i tick all asse y dei casi
 	const yAxisGroup = otherSvg.append('g')
