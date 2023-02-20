@@ -372,6 +372,7 @@ function createPoint(i){
 		.attr('stroke', 'steelblue')
 		.attr('stroke-width', 2)
 		.attr('marker-end','url(#arrow)')
+	
 		
 	//aggiungo i tick all asse y dei morti
 	const otherYAxisGroup = otherSvg.append('g')
@@ -427,12 +428,6 @@ function createPoint(i){
 		.text("Morti");
 
 	
-	// assegnazione del colore ai ticks
-	otherSvg
-	.selectAll('.tick line')
-	.style('stroke-width', 0)
-	//.style('stroke', '#D3D3D3')
-
 
 	// assegnazione del colore al testo dei ticks
 	otherSvg
