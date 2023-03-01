@@ -71,14 +71,14 @@ svg.append("text")
         .attr("x",- (svgHeight / 2))
         .attr("dy", "1em")
         .style("text-anchor", "middle")
-        .text("Morti");
+        .text("Deaths");
 
 // etichetta generale asse x
 svg.append("text")
 		.attr("x", svgWidth / 2 )
         .attr("y",  svgHeight - vizPadding/2)
         .style("text-anchor", "middle")
-        .text("Casi di positivita");
+        .text("Positive cases");
 
 
 // titolo del grafico
@@ -86,7 +86,7 @@ svg.append("text")
 		.attr("x", svgWidth / 2 )
         .attr("y", vizPadding/2)
         .style("text-anchor", "middle")
-        .text("rapporto casi/morti per nazione");
+        .text("case/death ratio");
 
 
 // assegnazione del colore ai ticks
@@ -314,8 +314,8 @@ function createPoint(i){
 	const maxDeaths = d3.max(month_group, d => d[1].deaths);
 
 	//creo dominio secondo grafico
-	const xOtherDomain = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto",
-	 "settembre", "ottobre", "novembre", "dicembre"]
+	const xOtherDomain = ["January", "February", "March", "April", "May", "June", "July", "August",
+	 "September", "October", "November", "December"]
 	
 
 	// definisce la scala per l'asse x utilizzando d3.scaleLog
@@ -399,7 +399,7 @@ function createPoint(i){
 		.attr("x", otherSvgWidth / 2 )
 		.attr("y", vizPadding/2)
 		.style("text-anchor", "middle")
-		.text("plot dei dati della nazione " + `${i[0]}`);
+		.text("deaths/cases ratio of " + `${i[0]}`);
 
 
 	// etichetta generale asse x
@@ -416,7 +416,7 @@ function createPoint(i){
 		.attr("x",- (otherSvgHeight / 2))
 		.attr("dy", "1em")
 		.style("text-anchor", "middle")
-		.text("Casi di positivita");
+		.text("Positive cases");
 
 	// etichetta generale asse y dx
 	otherSvg.append("text")
@@ -425,7 +425,7 @@ function createPoint(i){
 		.attr("x",- (otherSvgHeight / 2))
 		.attr("dy", "1em")
 		.style("text-anchor", "middle")
-		.text("Morti");
+		.text("Deaths");
 
 	
 
@@ -461,10 +461,13 @@ function createPoint(i){
 		  )
 
 	//legenda secondo plot
-	otherSvg.append("circle").attr("cx",120).attr("cy",20).attr("r", 4).style("fill", "#0000cf")
-	otherSvg.append("circle").attr("cx",120).attr("cy",40).attr("r", 4).style("fill", "#E61800")
-	otherSvg.append("text").attr("x", 130).attr("y", 21).text("Casi di positivita").style("font-size", "11px").attr("alignment-baseline","middle")
-	otherSvg.append("text").attr("x", 130).attr("y", 40).text("Morti").style("font-size", "11px").attr("alignment-baseline","middle")
+	//otherSvg.append("circle").attr("cx",120).attr("cy",20).attr("r", 4).style("fill", "#0000cf")
+	//otherSvg.append("circle").attr("cx",120).attr("cy",40).attr("r", 4).style("fill", "#E61800")
+	otherSvg.append("line").style("stroke", "#0000cf").attr("x1", 110).attr("y1", 20).attr("x2", 128).attr("y2", 20);
+	otherSvg.append("line").style("stroke", "#E61800").attr("x1", 110).attr("y1", 40).attr("x2", 128).attr("y2", 40);
+	
+	otherSvg.append("text").attr("x", 130).attr("y", 21).text("Positive cases").style("font-size", "11px").attr("alignment-baseline","middle")
+	otherSvg.append("text").attr("x", 130).attr("y", 40).text("Deaths").style("font-size", "11px").attr("alignment-baseline","middle")
 
 		
 }

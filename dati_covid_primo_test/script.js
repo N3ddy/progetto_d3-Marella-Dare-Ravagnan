@@ -8,8 +8,8 @@ const color2 = '#90EE90'
 const textColor = '#194d30'
 const pieRadius = 20
 
-const controlledcolor = "orange"
-const notcontrollercolor = "lightblue"
+const controlledcolor = "#8F5D0D"
+const notcontrollercolor = "#2786DB"
 const svgDOM = document.querySelector('#chart')
 // getting the svg element size
 let svgWidth = svgDOM.getAttribute('width') 
@@ -54,7 +54,7 @@ const data = d3.csvParse(dataset, d => {
 	}
 })
 
-var company_size = ["Piccola", "Media","Grande"];
+var company_size = ["Small", "Medium","Big"];
 var formatCompany = function(d) {
     return company_size[d];      
 }
@@ -212,7 +212,7 @@ const circles = svg
   .attr('cx',  (d, i) => xScale(i) + vizPadding)
   .attr('cy',  d => yScale(d.evasion))
   .attr('r', radius)
-  .style('fill', 'lightblue');
+  .style('fill', notcontrollercolor);
 
 //archi
 const arcs = svg
@@ -221,14 +221,14 @@ const arcs = svg
   .enter()
   .append("path")
   .attr("d", (d, i) => describeArc((xScale(i) + vizPadding), (yScale(d.evasion)), radius, 0, (d.percControlled*360)))
-  .style('fill', 'orange');
+  .style('fill', controlledcolor);
 
 //percentuali
 const texts = svg.selectAll(".myTexts")
     .data(data)
     .enter()
     .append("text")
-	.attr("x", (d, i) => xScale(i) + vizPadding - 15)
+	  .attr("x", (d, i) => xScale(i) + vizPadding - 15)
     .attr("y", d => yScale(d.evasion) - radius - 5)
     .attr("dy", "-.35em")
     .text(d => d.percControlled);
@@ -240,7 +240,7 @@ const texts = svg.selectAll(".myTexts")
 	.attr("x", svgWidth/2)
 	.attr("y", 20)
 	.attr("text-anchor", "middle")
-	.text("Grafici a torta che mostra l'evasione (asse y), il tipo di azienda (asse x) e la percentuale di aziende controllate.")
+	.text("Pie chart that show escaped money (y axis), company type (x axis) and the percentage of the checked company.")
 	.style("font-size", "20px")
 	.attr("alignment-baseline","middle")
 
@@ -250,7 +250,7 @@ const texts = svg.selectAll(".myTexts")
 	.attr("x", svgWidth/2)
 	.attr("y", 860)
 	.attr("text-anchor", "middle")
-	.text("tipo di azienda")
+	.text("company type")
 	.style("font-size", "15px")
 	.attr("alignment-baseline","middle")
 
@@ -263,12 +263,12 @@ const texts = svg.selectAll(".myTexts")
   .attr("dy", "1em")
   .style("text-anchor", "middle")
   .style("font-size", "15px")
-  .text("capitale evaso [€]");
+  .text("escaped money [€]");
 
 	svg.append("circle").attr("cx",1000).attr("cy",50).attr("r", 6).style("fill", controlledcolor)
 	svg.append("circle").attr("cx",1000).attr("cy",90).attr("r", 6).style("fill", notcontrollercolor)
 
-	svg.append("text").attr("x", 1010).attr("y", 55).text("controllata").style("font-size", "15px").attr("alignment-baseline","left")
-	svg.append("text").attr("x", 1010).attr("y", 95).text("non controllata").style("font-size", "15px").attr("alignment-baseline","left")
+	svg.append("text").attr("x", 1010).attr("y", 55).text("checked").style("font-size", "15px").attr("alignment-baseline","left")
+	svg.append("text").attr("x", 1010).attr("y", 95).text("not checked").style("font-size", "15px").attr("alignment-baseline","left")
 	
 /*END*/
